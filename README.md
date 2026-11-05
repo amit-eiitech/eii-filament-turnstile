@@ -199,4 +199,4 @@ Registration and password reset wiring methods can differ slightly between Filam
 
 ## Current scope
 
-Version 0.2 includes reusable field + verification engine + auth page scaffolding commands for Login, Register, and Request Password Reset.
+Version 1.0.0 includes reusable field + verification engine + auth page scaffolding commands for Login, Register, and Request Password Reset.
