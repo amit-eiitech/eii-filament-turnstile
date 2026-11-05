@@ -37,7 +37,7 @@ class MakeTurnstileLoginCommand extends Command
         $this->info('Created: ' . $targetPath);
         $this->newLine();
         $this->line('Next step: register it in your Filament panel provider:');
-        $this->line("->login(\\App\\Filament\\Pages\\Auth\\TrunstileLogin::class)");
+        $this->line("->login(\\App\\Filament\\Pages\\Auth\\TurnstileLogin::class)");
 
         return self::SUCCESS;
     }

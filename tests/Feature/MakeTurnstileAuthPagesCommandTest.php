@@ -9,9 +9,9 @@ class MakeTurnstileAuthPagesCommandTest extends TestCase
 {
     protected function tearDown(): void
     {
-        File::delete(app_path('Filament/Pages/Auth/TrunstileLogin.php'));
-        File::delete(app_path('Filament/Pages/Auth/TrunstileRegister.php'));
-        File::delete(app_path('Filament/Pages/Auth/TrunstileRequestPasswordReset.php'));
+        File::delete(app_path('Filament/Pages/Auth/TurnstileLogin.php'));
+        File::delete(app_path('Filament/Pages/Auth/TurnstileRegister.php'));
+        File::delete(app_path('Filament/Pages/Auth/TurnstileRequestPasswordReset.php'));
 
         parent::tearDown();
     }
@@ -20,13 +20,13 @@ class MakeTurnstileAuthPagesCommandTest extends TestCase
     {
         $this->artisan('make:filament-turnstile-login')->assertSuccessful();
 
-        $path = app_path('Filament/Pages/Auth/TrunstileLogin.php');
+        $path = app_path('Filament/Pages/Auth/TurnstileLogin.php');
 
         $this->assertTrue(File::exists($path));
 
         $contents = File::get($path);
 
-        $this->assertStringContainsString('class TrunstileLogin extends Login', $contents);
+        $this->assertStringContainsString('class TurnstileLogin extends Login', $contents);
         $this->assertStringContainsString('use Filament\\Schemas\\Schema;', $contents);
         $this->assertStringContainsString('public function form(Schema $schema): Schema', $contents);
         $this->assertStringContainsString("Turnstile::make('turnstile_token')", $contents);
@@ -36,13 +36,13 @@ class MakeTurnstileAuthPagesCommandTest extends TestCase
     {
         $this->artisan('make:filament-turnstile-register')->assertSuccessful();
 
-        $path = app_path('Filament/Pages/Auth/TrunstileRegister.php');
+        $path = app_path('Filament/Pages/Auth/TurnstileRegister.php');
 
         $this->assertTrue(File::exists($path));
 
         $contents = File::get($path);
 
-        $this->assertStringContainsString('class TrunstileRegister extends Register', $contents);
+        $this->assertStringContainsString('class TurnstileRegister extends Register', $contents);
         $this->assertStringContainsString('public function form(Schema $schema): Schema', $contents);
     }
 
@@ -50,7 +50,7 @@ class MakeTurnstileAuthPagesCommandTest extends TestCase
     {
         $this->artisan('make:filament-turnstile-request-password-reset')->assertSuccessful();
 
-        $path = app_path('Filament/Pages/Auth/TrunstileRequestPasswordReset.php');
+        $path = app_path('Filament/Pages/Auth/TurnstileRequestPasswordReset.php');
 
         $this->assertTrue(File::exists($path));
 

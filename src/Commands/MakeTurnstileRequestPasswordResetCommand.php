@@ -37,7 +37,7 @@ class MakeTurnstileRequestPasswordResetCommand extends Command
         $this->info('Created: ' . $targetPath);
         $this->newLine();
         $this->line('Next step: register it in your Filament panel provider auth setup.');
-        $this->line("Class: \\App\\Filament\\Pages\\Auth\\TrunstileRequestPasswordReset::class");
+        $this->line("Class: \\App\\Filament\\Pages\\Auth\\TurnstileRequestPasswordReset::class");
 
         return self::SUCCESS;
     }

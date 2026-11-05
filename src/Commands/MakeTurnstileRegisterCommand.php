@@ -37,7 +37,7 @@ class MakeTurnstileRegisterCommand extends Command
         $this->info('Created: ' . $targetPath);
         $this->newLine();
         $this->line('Next step: register it in your Filament panel provider auth setup.');
-        $this->line("Class: \\App\\Filament\\Pages\\Auth\\TrunstileRegister::class");
+        $this->line("Class: \\App\\Filament\\Pages\\Auth\\TurnstileRegister::class");
 
         return self::SUCCESS;
     }

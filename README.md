@@ -187,14 +187,14 @@ php artisan make:filament-turnstile-request-password-reset
 
 Generated classes:
 
-- `App\\Filament\\Pages\\Auth\\TrunstileLogin`
-- `App\\Filament\\Pages\\Auth\\TrunstileRegister`
-- `App\\Filament\\Pages\\Auth\\TrunstileRequestPasswordReset`
+- `App\\Filament\\Pages\\Auth\\TurnstileLogin`
+- `App\\Filament\\Pages\\Auth\\TurnstileRegister`
+- `App\\Filament\\Pages\\Auth\\TurnstileRequestPasswordReset`
 
 Then wire them into your panel provider (example):
 
 ```php
-->login(\App\Filament\Pages\Auth\TrunstileLogin::class)
+->login(\App\Filament\Pages\Auth\TurnstileLogin::class)
 ```
 
 Registration and password reset wiring methods can differ slightly between Filament versions and panel setup styles, so register the generated classes in your panel's auth-page configuration accordingly.
