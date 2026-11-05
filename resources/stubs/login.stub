@@ -1,0 +1,25 @@
+<?php
+
+namespace App\Filament\Pages\Auth;
+
+use Eii\FilamentTurnstile\Forms\Components\Turnstile;
+use Filament\Auth\Pages\Login;
+use Filament\Schemas\Schema;
+
+class TrunstileLogin extends Login
+{
+    public function form(Schema $schema): Schema
+    {
+        return $schema
+            ->components([
+                $this->getEmailFormComponent(),
+                $this->getPasswordFormComponent(),
+                $this->getRememberFormComponent(),
+                Turnstile::make('turnstile_token')
+                    ->turnstileAction((string) config('filament-turnstile.actions.login', 'admin-login'))
+                    ->theme((string) config('filament-turnstile.theme', 'auto'))
+                    ->size((string) config('filament-turnstile.size', 'normal')),
+            ])
+            ->statePath('data');
+    }
+}

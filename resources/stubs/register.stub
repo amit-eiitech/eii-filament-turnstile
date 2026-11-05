@@ -1,0 +1,26 @@
+<?php
+
+namespace App\Filament\Pages\Auth;
+
+use Eii\FilamentTurnstile\Forms\Components\Turnstile;
+use Filament\Auth\Pages\Register;
+use Filament\Schemas\Schema;
+
+class TrunstileRegister extends Register
+{
+    public function form(Schema $schema): Schema
+    {
+        return $schema
+            ->components([
+                $this->getNameFormComponent(),
+                $this->getEmailFormComponent(),
+                $this->getPasswordFormComponent(),
+                $this->getPasswordConfirmationFormComponent(),
+                Turnstile::make('turnstile_token')
+                    ->turnstileAction((string) config('filament-turnstile.actions.register', 'admin-register'))
+                    ->theme((string) config('filament-turnstile.theme', 'auto'))
+                    ->size((string) config('filament-turnstile.size', 'normal')),
+            ])
+            ->statePath('data');
+    }
+}
