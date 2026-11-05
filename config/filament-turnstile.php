@@ -41,5 +41,6 @@ return [
     */
     'theme' => 'auto', // auto, light, dark
     'size' => 'normal', // normal, compact
+    'appearance' => 'always', // always, execute, interaction-only
     'language' => env('TURNSTILE_LANGUAGE'), // e.g., 'en', 'es', 'fr', etc.
 ];

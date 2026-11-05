@@ -17,9 +17,12 @@ class TrunstileRegister extends Register
                 $this->getPasswordFormComponent(),
                 $this->getPasswordConfirmationFormComponent(),
                 Turnstile::make('turnstile_token')
+                    ->label('Security Verification')
                     ->turnstileAction((string) config('filament-turnstile.actions.register', 'admin-register'))
                     ->theme((string) config('filament-turnstile.theme', 'auto'))
-                    ->size((string) config('filament-turnstile.size', 'normal')),
+                    ->size((string) config('filament-turnstile.size', 'normal'))
+                    ->appearance('interaction-only')
+                    ->columnSpanFull(),
             ])
             ->statePath('data');
     }

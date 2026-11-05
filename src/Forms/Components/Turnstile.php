@@ -13,6 +13,8 @@ class Turnstile extends Field
 
     protected ?string $size = null;
 
+    protected ?string $appearance = null;
+
     protected string|\Closure|null $turnstileAction = null;
 
     protected function setUp(): void
@@ -74,6 +76,13 @@ class Turnstile extends Field
         return $this;
     }
 
+    public function appearance(?string $appearance): static
+    {
+        $this->appearance = $appearance;
+
+        return $this;
+    }
+
     public function getTheme(): string
     {
         return $this->theme ?? (string) config('filament-turnstile.theme', 'auto');
@@ -82,5 +91,10 @@ class Turnstile extends Field
     public function getSize(): string
     {
         return $this->size ?? (string) config('filament-turnstile.size', 'normal');
+    }
+
+    public function getAppearance(): string
+    {
+        return $this->appearance ?? (string) config('filament-turnstile.appearance', 'always');
     }
 }

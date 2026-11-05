@@ -19,6 +19,7 @@
                     action: @js($getTurnstileAction()),
                     theme: @js($getTheme()),
                     size: @js($getSize()),
+                    appearance: @js($getAppearance()),
                     callback: (token) => this.state = token,
                     'expired-callback': () => this.state = '',
                     'error-callback': () => this.state = '',

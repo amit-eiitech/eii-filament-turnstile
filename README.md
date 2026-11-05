@@ -125,9 +125,11 @@ public function form(Schema $schema): Schema
     return $schema->components([
         // Your other fields...
         Turnstile::make('turnstile_token')
+            ->label('Security Verification')
             ->turnstileAction('admin-users-create')
             ->theme('auto')
-            ->size('normal'),
+            ->size('normal')
+            ->appearance('interaction-only'),
     ]);
 }
 ```
