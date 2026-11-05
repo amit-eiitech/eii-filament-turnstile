@@ -13,7 +13,7 @@ class MakeTurnstileRegisterCommand extends Command
 
     public function handle(): int
     {
-        $targetPath = app_path('Filament/Pages/Auth/TrunstileRegister.php');
+        $targetPath = app_path('Filament/Pages/Auth/TurnstileRegister.php');
 
         if (File::exists($targetPath) && ! $this->option('force')) {
             $this->error('File already exists: ' . $targetPath);

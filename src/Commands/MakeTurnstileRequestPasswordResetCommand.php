@@ -13,7 +13,7 @@ class MakeTurnstileRequestPasswordResetCommand extends Command
 
     public function handle(): int
     {
-        $targetPath = app_path('Filament/Pages/Auth/TrunstileRequestPasswordReset.php');
+        $targetPath = app_path('Filament/Pages/Auth/TurnstileRequestPasswordReset.php');
 
         if (File::exists($targetPath) && ! $this->option('force')) {
             $this->error('File already exists: ' . $targetPath);
