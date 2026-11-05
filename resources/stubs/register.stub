@@ -6,7 +6,7 @@ use Eii\FilamentTurnstile\Forms\Components\Turnstile;
 use Filament\Auth\Pages\Register;
 use Filament\Schemas\Schema;
 
-class TrunstileRegister extends Register
+class TurnstileRegister extends Register
 {
     public function form(Schema $schema): Schema
     {
@@ -21,7 +21,7 @@ class TrunstileRegister extends Register
                     ->turnstileAction((string) config('filament-turnstile.actions.register', 'admin-register'))
                     ->theme((string) config('filament-turnstile.theme', 'auto'))
                     ->size((string) config('filament-turnstile.size', 'normal'))
-                    ->appearance('interaction-only')
+                    ->appearance((string) config('filament-turnstile.appearance', 'always'))
                     ->columnSpanFull(),
             ])
             ->statePath('data');

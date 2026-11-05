@@ -40,7 +40,7 @@ return [
     |--------------------------------------------------------------------------
     */
     'theme' => 'auto', // auto, light, dark
-    'size' => 'normal', // normal, compact
+    'size' => 'flexible', // normal, compact
     'appearance' => 'always', // always, execute, interaction-only
-    'language' => env('TURNSTILE_LANGUAGE'), // e.g., 'en', 'es', 'fr', etc.
+    'language' => env('APP_LOCALE', 'en'), // e.g., 'en', 'es', 'fr', etc.
 ];

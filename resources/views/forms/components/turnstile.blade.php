@@ -56,7 +56,7 @@
             }
         },
     }" x-on:eii-turnstile-reset.window="reset()">
-        <div x-ref="widget"></div>
+        <div x-ref="widget" style="width: 100%;"></div>
         <input type="hidden" x-model="state" />
     </div>
 </x-dynamic-component>

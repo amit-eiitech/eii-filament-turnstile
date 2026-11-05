@@ -6,7 +6,7 @@ use Eii\FilamentTurnstile\Forms\Components\Turnstile;
 use Filament\Auth\Pages\Login;
 use Filament\Schemas\Schema;
 
-class TrunstileLogin extends Login
+class TurnstileLogin extends Login
 {
     public function form(Schema $schema): Schema
     {
@@ -20,7 +20,7 @@ class TrunstileLogin extends Login
                     ->turnstileAction((string) config('filament-turnstile.actions.login', 'admin-login'))
                     ->theme((string) config('filament-turnstile.theme', 'auto'))
                     ->size((string) config('filament-turnstile.size', 'normal'))
-                    ->appearance('interaction-only')
+                    ->appearance((string) config('filament-turnstile.appearance', 'always'))
                     ->columnSpanFull(),
             ])
             ->statePath('data');
