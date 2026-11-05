@@ -1,6 +1,6 @@
 {
   "name": "eii/filament-turnstile",
-  "description": "Cloudflare Turnstile integration for Filament 5 forms.",
+  "description": "Cloudflare Turnstile integration for Filament 5 forms and auth scaffolding with action-aware validation.",
   "type": "library",
   "license": "MIT",
   "require": {

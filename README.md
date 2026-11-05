@@ -1,16 +1,25 @@
 # Eii Filament Turnstile
 
-Cloudflare Turnstile integration for Filament 5 forms and auth pages. It provides a reusable Filament field, mandatory server-side Siteverify validation, and scaffold commands for Login, Register, and Request Password Reset pages.
+Cloudflare Turnstile integration for Filament 5 forms and auth scaffolding, with action-aware validation and analytics-friendly tracking.
+
+This package gives you:
+
+- a reusable `Turnstile` Filament form component,
+- strict server-side Cloudflare Siteverify validation,
+- scaffolding commands for custom Filament auth pages (Login, Register, Request Password Reset),
+- per-form/per-page action support so you can reuse the same site/secret keys while still tracking each flow separately.
 
 ## Requirements
 
 - PHP 8.2+
-- Laravel 11.28+
+- Laravel 11.28+ (also supports 12 and 13 via Illuminate constraints)
 - Filament Forms 5.x
 
-## Install from a local path (development)
+## Installation
 
-In the Laravel application's `composer.json`, add a path repository:
+### Local path install (development)
+
+In your Laravel app `composer.json`:
 
 ```json
 {
@@ -18,35 +27,37 @@ In the Laravel application's `composer.json`, add a path repository:
     {
       "type": "path",
       "url": "../eii-filament-turnstile",
-      "options": { "symlink": true }
+      "options": {
+        "symlink": true
+      }
     }
   ]
 }
 ```
 
-Adjust the path to the package directory, then run:
+Then require it:
 
 ```bash
 composer require eii/filament-turnstile:@dev
 ```
 
-When published to Packagist, the normal install command will be:
+### Packagist install
 
 ```bash
 composer require eii/filament-turnstile
 ```
 
-Laravel auto-discovers the service provider.
+Laravel will auto-discover the service provider.
 
-## Configure
+## Configuration
 
-Publish the config:
+Publish config:
 
 ```bash
 php artisan vendor:publish --tag=filament-turnstile-config
 ```
 
-Add to `.env`:
+Add required env values:
 
 ```env
 TURNSTILE_SITE_KEY=your-site-key
@@ -55,13 +66,14 @@ TURNSTILE_ALLOWED_HOSTNAMES=yourdomain.com
 TURNSTILE_ALLOW_MISSING_ACTION=false
 ```
 
-The hostname allowlist is mandatory. An empty list fails closed. Use comma-separated hostnames without scheme, path, or port.
+### Important behavior
 
-`TURNSTILE_ALLOW_MISSING_ACTION` should remain `false` in production. It exists only for local test-key responses that omit the action field.
+- `TURNSTILE_ALLOWED_HOSTNAMES` is mandatory and fail-closed (empty list rejects all).
+- Hostnames must be comma-separated plain hosts (no scheme/path/port).
+- Keep `TURNSTILE_ALLOW_MISSING_ACTION=false` in production.
+- Action names, widget options, and HTTP timeouts are configured in `config/filament-turnstile.php`.
 
-Action names, widget theme/size, and HTTP timeouts are now controlled in `config/filament-turnstile.php` (not in `.env`).
-
-Example `config/filament-turnstile.php` actions section:
+Example actions block:
 
 ```php
 'actions' => [
@@ -71,48 +83,22 @@ Example `config/filament-turnstile.php` actions section:
 ],
 ```
 
-## Local testing
+## Why actions matter (tracking + security)
 
-Cloudflare provides [dummy site keys and secret keys](https://developers.cloudflare.com/turnstile/troubleshooting/testing/) that work on any domain including `localhost`. Use these during development and in automated tests — no real Cloudflare account required.
+You can use the same Turnstile site key and secret key across multiple forms/pages, while assigning a unique action per flow.
 
-### Test keys
+Example actions:
 
-| Site key | Secret key | Behavior |
-|----------|-----------|----------|
-| `1x00000000000000000000AA` | `1x0000000000000000000000000000000AA` | Always passes validation |
-| `2x00000000000000000000AB` | `2x0000000000000000000000000000000AA` | Always fails validation |
-| `1x00000000000000000000AA` | `3x0000000000000000000000000000000AA` | Always fails — "token already spent" |
-| `3x00000000000000000000FF` | `1x0000000000000000000000000000000AA` | Forces interactive challenge, then passes |
+- `admin-login`
+- `admin-register`
+- `admin-password-reset-request`
+- `admin-users-create`
+- `admin-orders-update`
 
-### Example `.env` for local development
+Benefits:
 
-```env
-TURNSTILE_SITE_KEY=1x00000000000000000000AA
-TURNSTILE_SECRET_KEY=1x0000000000000000000000000000000AA
-TURNSTILE_ALLOWED_HOSTNAMES=example.com
-TURNSTILE_ALLOW_MISSING_ACTION=true
-```
-
-> **Note:** Test keys return `hostname: "example.com"` and `action: "test"` in the siteverify response. Set `TURNSTILE_ALLOWED_HOSTNAMES=example.com` and `TURNSTILE_ALLOW_MISSING_ACTION=true` when using test keys.
-
-### Example `.env` for testing rejection flow
-
-```env
-TURNSTILE_SITE_KEY=2x00000000000000000000AB
-TURNSTILE_SECRET_KEY=2x0000000000000000000000000000000AA
-TURNSTILE_ALLOWED_HOSTNAMES=example.com
-TURNSTILE_ALLOW_MISSING_ACTION=true
-```
-
-Use this to verify that your forms correctly reject failed validations and display error messages.
-
-### Important
-
-- Test keys return `hostname: "example.com"` in the siteverify response. You must include `example.com` in `TURNSTILE_ALLOWED_HOSTNAMES` when testing.
-- Test keys return `action: "test"` in the siteverify response. Set `TURNSTILE_ALLOW_MISSING_ACTION=true` to skip action validation, or set `'action' => 'test'` in your config.
-- Test keys generate dummy tokens (`XXXX.DUMMY.TOKEN.XXXX`). Test secret keys only accept dummy tokens; production secret keys only accept real tokens.
-- Never commit test keys to production `.env` files.
-- Production site keys should **not** include `localhost` or `127.0.0.1` in their allowed domains.
+- Cloudflare analytics can distinguish traffic by flow.
+- Server-side validation checks the expected action to prevent token reuse across unrelated forms.
 
 ## Use in a Filament form
 
@@ -123,7 +109,7 @@ use Filament\Schemas\Schema;
 public function form(Schema $schema): Schema
 {
     return $schema->components([
-        // Your other fields...
+        // ... your fields
         Turnstile::make('turnstile_token')
             ->label('Security Verification')
             ->turnstileAction('admin-users-create')
@@ -134,21 +120,43 @@ public function form(Schema $schema): Schema
 }
 ```
 
-Use different actions per page/form so Cloudflare analytics can distinguish traffic:
+Notes:
 
-- `admin-login`
-- `admin-register`
-- `admin-password-reset-request`
-- `admin-users-create`
-- `admin-orders-update`
+- Field is required.
+- Token is verified server-side via Cloudflare Siteverify.
+- Don’t trust frontend callback alone.
 
-The field is required and automatically applies server-side Siteverify validation. The field's state contains the token. Do not trust the browser callback alone.
-
-After a failed submission, you can dispatch a reset event from the Livewire component:
+After a failed submit, you can reset the widget from Livewire:
 
 ```php
 $this->dispatch('eii-turnstile-reset');
 ```
+
+## Auth page scaffolding commands (Filament 5)
+
+Generate custom Turnstile-enabled auth pages:
+
+```bash
+php artisan make:filament-turnstile-login
+php artisan make:filament-turnstile-register
+php artisan make:filament-turnstile-request-password-reset
+```
+
+Each command supports `--force` to overwrite existing files.
+
+Generated classes:
+
+- `App\Filament\Pages\Auth\TurnstileLogin`
+- `App\Filament\Pages\Auth\TurnstileRegister`
+- `App\Filament\Pages\Auth\TurnstileRequestPasswordReset`
+
+Register them in your Panel provider auth setup. Example:
+
+```php
+->login(\App\Filament\Pages\Auth\TurnstileLogin::class)
+```
+
+(Registration/password-reset wiring may differ depending on your panel config style.)
 
 ## Direct verifier usage
 
@@ -162,43 +170,42 @@ $result = app(TurnstileVerifier::class)->verify(
 );
 
 if (! $result->success) {
-    // Reject the request.
+    // reject request
 }
 ```
 
-## Security notes
+## Local testing with Cloudflare test keys
 
-- Siteverify is always called server-side during field validation.
-- Tokens are limited to 2,048 characters and Cloudflare enforces token expiry and single-use semantics.
-- Hostname validation is mandatory and exact.
-- Action validation is mandatory unless `TURNSTILE_ALLOW_MISSING_ACTION=true` is explicitly configured.
-- Secret keys and tokens are never written to package logs.
-- API failures fail closed.
+Cloudflare provides official test keys that work on localhost and CI.
+Reference: <https://developers.cloudflare.com/turnstile/troubleshooting/testing/>
 
-## Auth page scaffolding (Filament 5)
+| Site key | Secret key | Behavior |
+|---|---|---|
+| `1x00000000000000000000AA` | `1x0000000000000000000000000000000AA` | Always passes |
+| `2x00000000000000000000AB` | `2x0000000000000000000000000000000AA` | Always fails |
+| `1x00000000000000000000AA` | `3x0000000000000000000000000000000AA` | Fails (token already spent) |
+| `3x00000000000000000000FF` | `1x0000000000000000000000000000000AA` | Interactive challenge then pass |
 
-Generate Turnstile-enabled auth pages:
+Example local env:
 
-```bash
-php artisan make:filament-turnstile-login
-php artisan make:filament-turnstile-register
-php artisan make:filament-turnstile-request-password-reset
+```env
+TURNSTILE_SITE_KEY=1x00000000000000000000AA
+TURNSTILE_SECRET_KEY=1x0000000000000000000000000000000AA
+TURNSTILE_ALLOWED_HOSTNAMES=example.com
+TURNSTILE_ALLOW_MISSING_ACTION=true
 ```
 
-Generated classes:
+With test keys, Cloudflare commonly returns `hostname=example.com` and `action=test`, so configure accordingly for local tests.
 
-- `App\\Filament\\Pages\\Auth\\TurnstileLogin`
-- `App\\Filament\\Pages\\Auth\\TurnstileRegister`
-- `App\\Filament\\Pages\\Auth\\TurnstileRequestPasswordReset`
+## Security model
 
-Then wire them into your panel provider (example):
+- Always validates with Cloudflare server-side.
+- Rejects invalid/missing/oversized tokens.
+- Enforces hostname allowlist.
+- Enforces action match (unless missing action is explicitly allowed).
+- Fails closed on API/network/config problems.
+- Does not log secrets or tokens.
 
-```php
-->login(\App\Filament\Pages\Auth\TurnstileLogin::class)
-```
+---
 
-Registration and password reset wiring methods can differ slightly between Filament versions and panel setup styles, so register the generated classes in your panel's auth-page configuration accordingly.
-
-## Current scope
-
-Version 1.0.0 includes reusable field + verification engine + auth page scaffolding commands for Login, Register, and Request Password Reset.
+Current scope includes reusable field + verification service + auth-page scaffolding for Login, Register, and Request Password Reset.
